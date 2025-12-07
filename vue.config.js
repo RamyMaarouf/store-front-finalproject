@@ -1,3 +1,5 @@
+// vue.config.js
+
 const { defineConfig } = require('@vue/cli-service')
 const fetch = require("node-fetch")
 const bodyParser = require('body-parser')
@@ -6,6 +8,9 @@ const PRODUCT_SERVICE_URL = (process.env.VUE_APP_PRODUCT_SERVICE_URL || "http://
 const ORDER_SERVICE_URL = (process.env.VUE_APP_ORDER_SERVICE_URL || "http://172.19.0.5:3000/")
 
 module.exports = defineConfig({
+  // 💥 CRITICAL FIX: Ensures static assets (images, CSS, JS) are referenced 
+  // from the root of the domain in the final production build.
+  publicPath: '/', 
   transpileDependencies: true,
   devServer: {
     port: 8080,
