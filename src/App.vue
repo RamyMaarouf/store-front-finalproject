@@ -39,7 +39,7 @@ export default {
         // Your existing product fetching logic
     },
     // 💥 FIX: Renamed 'product' to '_product' to resolve the ESlint 'no-unused-vars' build error.
-    addToCart(_product) {
+    addToCart() {
         // Your existing add to cart logic
         // If you actually use the 'product' variable here, revert the name and use it.
     }
