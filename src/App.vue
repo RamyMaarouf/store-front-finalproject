@@ -1,7 +1,36 @@
 <template>
-  <footer>
-    <p>&copy; 2025 Best Buy Cloud-Native App. All rights reserved.</p>
-  </footer>
+  <div id="app">
+    <header>
+      <div class="header-content">
+        <div class="logo-title">
+          <img src="@/assets/bby-logo.png" alt="Best Buy Logo" class="logo" />
+          <h1 class="title">Best Buy Cloud-Native Store</h1>
+        </div>
+
+        <nav>
+          <ul>
+            <li><a href="#">Products</a></li>
+            <li><a href="#">Cart ({{ cartCount }})</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Product Grid -->
+    <div class="product-grid">
+      <div class="product-card" v-for="p in products" :key="p.id">
+        <img :src="p.image" class="product-image" alt="Product Image" />
+        <h3>{{ p.name }}</h3>
+        <p class="price">$ {{ p.price }}</p>
+
+        <button @click="addToCart(p)">Add to Cart</button>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 Best Buy Cloud-Native App. All rights reserved.</p>
+    </footer>
+  </div>
 </template>
 
 <script>
@@ -10,46 +39,59 @@ export default {
     return {
       products: [],
       cartItems: [],
-      cartCount: 0 
+      cartCount: 0
     };
   },
+
   methods: {
-    fetchProducts() {
-        // Your existing product fetching logic
+    // -----------------------------------------
+    // Fetch products from Product-Service (BestBuy version)
+    // -----------------------------------------
+    async fetchProducts() {
+      try {
+        const res = await fetch("http://product-service.default.svc.cluster.local/products");
+        const data = await res.json();
+
+        // Expecting your Product-Service to return:
+        // [{ id, name, price, image }]
+        this.products = data;
+      } catch (err) {
+        console.error("❌ Failed to fetch products:", err);
+      }
     },
-    // FIX: Removed parameter name entirely to resolve ESlint's 'no-unused-vars' error.
-    addToCart() { 
-        // Your existing add to cart logic
+
+    // -----------------------------------------
+    // Add product to cart
+    // -----------------------------------------
+    addToCart(product) {
+      this.cartItems.push(product);
+      this.cartCount = this.cartItems.length;
     }
   },
+
   created() {
-      // Your existing created hook logic
+    this.fetchProducts();
   }
-}
+};
 </script>
+
 <style>
-/* 2. BODY: REMOVE GRASS/IMAGE BACKGROUND for a clean look */
+/* Light gray background for modern UI */
 body {
-  /* background-image: url('@/assets/bby-background.jpg'); */
-  /* background-size: cover; */
-  /* background-position: center; */
-  /* background-attachment: fixed; */
-  background-color: #f7f7f7; /* Light gray background for a modern look */
+  background-color: #f7f7f7;
   margin: 0;
   padding: 0;
 }
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 100px; 
+  margin-top: 100px;
   padding-bottom: 50px;
 }
 
-/* 3. HEADER & NAVIGATION: BEST BUY BLUE */
+/* HEADER */
 header {
   position: fixed;
   top: 0;
@@ -58,7 +100,7 @@ header {
   background-color: #004694; /* Best Buy Blue */
   padding: 0 20px;
   z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .header-content {
@@ -66,7 +108,7 @@ header {
   justify-content: space-between;
   align-items: center;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: auto;
 }
 
 .logo-title {
@@ -75,21 +117,19 @@ header {
 }
 
 .logo {
-  height: 40px; 
+  height: 40px;
   margin-right: 15px;
 }
 
 .title {
-  color: white;
+  color: #fff;
   font-size: 1.5rem;
   margin: 0;
 }
 
 nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
   display: flex;
+  list-style: none;
 }
 
 nav li {
@@ -97,48 +137,68 @@ nav li {
 }
 
 nav a {
-  color: #fff;
-  text-decoration: none;
+  color: white;
   font-weight: bold;
+  text-decoration: none;
 }
 
 nav a:hover {
-  color: #FFC600; /* Best Buy Yellow on hover */
+  color: #FFC600;
 }
 
-/* 4. FOOTER: BEST BUY BLUE */
+/* FOOTER */
 footer {
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: #004694; /* Best Buy Blue */
-  color: #fff;
+  width: 100%;
+  background-color: #004694;
+  color: white;
   padding: 0.5rem;
-  margin: 0;
-  z-index: 999;
 }
 
-/* 5. BUTTONS: BEST BUY YELLOW */
+/* PRODUCT GRID */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  padding: 40px;
+  max-width: 1200px;
+  margin: auto;
+  margin-bottom: 100px;
+}
+
+.product-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.product-image {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+}
+
+.price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #004694;
+}
+
+/* Buttons (Best Buy Yellow) */
 button {
   padding: 10px;
-  background-color: #FFC600; /* Best Buy Yellow */
-  color: #000; 
+  background-color: #FFC600;
+  color: #000;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
-  height: 42px;
   font-weight: bold;
-  transition: background-color 0.2s;
+  cursor: pointer;
 }
 
-.product-controls button:hover, .checkout-button:hover {
-  background-color: #002D59; /* A darker Best Buy Blue/Navy for hover contrast */
+button:hover {
+  background-color: #002D59;
   color: white;
-}
-
-/* You can keep or adjust your existing product-card styles here */
-.product-card {
-  /* ... */
 }
 </style>
