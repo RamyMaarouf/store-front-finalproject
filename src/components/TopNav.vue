@@ -5,14 +5,47 @@
         <img src="/bestbuy-logo.png" alt="Best Buy Logo"> 
       </a>
     </div>
+    <!-- Hamburger (mobile) -->
+    <button class="hamburger" @click="toggleNav" aria-label="Toggle navigation">
+      <span class="hamburger-icon"></span>
+    </button>
+ 
+    <!-- Desktop + mobile menu -->
+    <ul class="nav-links" :class="{ 'nav-links--open': isNavOpen }">
+ 
+      <!-- Updated menu items -->
+      <li><router-link to="/" @click="closeNav">All Products</router-link></li>
+      <li><router-link to="/cart" @click="closeNav">Cart ({{ cartItemCount }})</router-link></li>
+ 
+ 
+    </ul>
+ 
     </nav>
 </template>
 
 <script>
 export default {
-  name: 'TopNav',
-  // You can define props, data, or methods here if necessary
-}
+  name: "TopNav",
+  props: {
+    cartItemCount: {
+      type: Number,
+      default: 0,
+    },
+  },
+  data() {
+    return {
+      isNavOpen: false,
+    };
+  },
+  methods: {
+    toggleNav() {
+      this.isNavOpen = !this.isNavOpen;
+    },
+    closeNav() {
+      this.isNavOpen = false;
+    },
+  },
+};
 </script>
 
 <style scoped>
